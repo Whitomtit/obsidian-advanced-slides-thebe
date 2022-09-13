@@ -13,3 +13,6 @@ coverage
 
 # docs
 docs/public
+
+# idea specific
+.idea
