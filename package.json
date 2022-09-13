@@ -46,6 +46,7 @@
 		"reveal.js-mermaid-plugin": "^0.0.2",
 		"reveal.js-plugins": "^4.1.5",
 		"sass": "^1.45.1",
+		"thebe": "Whitomtit/thebe-obsidian",
 		"ts-jest": "^27.1.2",
 		"ts-mockito": "^2.6.1",
 		"ts-node": "^10.4.0",

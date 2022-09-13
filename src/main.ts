@@ -41,6 +41,7 @@ export interface AdvancedSlidesSettings {
 	enableOverview: boolean;
 	enableChalkboard: boolean;
 	enableMenu: boolean;
+	enableThebe: boolean;
 	theme: string;
 	highlightTheme: string;
 	transition: string;
@@ -50,6 +51,7 @@ export interface AdvancedSlidesSettings {
 	slideNumber: boolean;
 	showGrid: boolean;
 	autoComplete: string;
+	kernelHost: string;
 }
 
 const DEFAULT_SETTINGS: AdvancedSlidesSettings = {
@@ -59,6 +61,7 @@ const DEFAULT_SETTINGS: AdvancedSlidesSettings = {
 	enableChalkboard: false,
 	enableOverview: false,
 	enableMenu: false,
+	enableThebe: false,
 	theme: 'black',
 	highlightTheme: 'zenburn',
 	transition: 'slide',
@@ -67,7 +70,8 @@ const DEFAULT_SETTINGS: AdvancedSlidesSettings = {
 	progress: true,
 	slideNumber: false,
 	showGrid: false,
-	autoComplete: 'inPreview'
+	autoComplete: 'inPreview',
+	kernelHost: 'localhost:16789',
 };
 
 export default class AdvancedSlidesPlugin extends Plugin {
@@ -602,6 +606,33 @@ class AdvancedSlidesSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					}, 750),
 				),
+			);
+
+		new Setting(containerEl)
+			.setName('ThebeLab Code Runner')
+			.setDesc('Should the slides have runnable and editable code snippets ?')
+			.addToggle(value =>
+				value.setValue(this.plugin.settings.enableThebe).onChange(
+					_.debounce(async value => {
+						this.plugin.settings.enableThebe = value;
+						await this.plugin.saveSettings();
+					}, 750),
+				),
+			);
+
+		new Setting(containerEl)
+			.setName('ThebeLab Kernel Host')
+			.setDesc('Where to search for kernels ?')
+			.addText(text =>
+				text
+					.setPlaceholder('localhost:16789')
+					.setValue(this.plugin.settings.kernelHost)
+					.onChange(
+						_.debounce(async value => {
+							this.plugin.settings.kernelHost = value;
+							await this.plugin.saveSettings();
+						}, 750),
+					),
 			);
 	}
 }

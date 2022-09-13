@@ -68,7 +68,7 @@ export class RevealRenderer {
 		const options = this.yaml.getSlideOptions(yamlOptions, renderForPrint);
 		const revealOptions = this.yaml.getRevealOptions(options);
 
-		const { title } = options;
+		const { title, kernel } = options;
 		const themeUrl = this.getThemeUrl(options.theme);
 		const highlightThemeUrl = this.getHighlightThemeUrl(options.highlightTheme);
 
@@ -82,7 +82,7 @@ export class RevealRenderer {
 		const settings = this.yaml.getTemplateSettings(options);
 
 		const { enableCustomControls } = options;
-		const { enableChalkboard, enableOverview, enableMenu } = settings;
+		const { enableChalkboard, enableOverview, enableMenu, enableThebe, kernelHost } = settings;
 
 		let base = '';
 		if (!ImageCollector.getInstance().shouldCollect()) {
@@ -96,10 +96,13 @@ export class RevealRenderer {
 			highlightThemeUrl,
 			cssPaths,
 			base,
+			kernel,
+			kernelHost,
 			enableCustomControls,
 			enableChalkboard,
 			enableOverview,
 			enableMenu,
+			enableThebe,
 			revealOptionsStr: JSON.stringify(revealOptions),
 		});
 
