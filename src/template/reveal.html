@@ -15,6 +15,9 @@
 	{{#enableChalkboard}}
 	<link rel="stylesheet" href="{{{base}}}plugin/chalkboard/style.css">
 	{{/enableChalkboard}}
+	{{#enableThebe}}
+	<link rel="stylesheet" href="{{{base}}}plugin/thebe/style.css">
+	{{/enableThebe}}
 
 	{{#cssPaths}}
     <link rel="stylesheet" href="{{{base}}}{{{.}}}" />
@@ -118,6 +121,10 @@
 	<script src="{{{base}}}plugin/elapsed-time-bar/elapsed-time-bar.js"></script>
 	{{/enableTimeBar}}
 	{{/timeForPresentation}}
+	{{#enableThebe}}
+	<script src="{{{base}}}plugin/thebe/index.js"></script>
+	<script src="{{{base}}}plugin/thebe/plugin.js"></script>
+	{{/enableThebe}}
 
     <script>
       function extend() {
@@ -229,8 +236,16 @@
 		{{#enableMenu}}
 		menu: {
 			loadIcons: false
-		}
+		},
 		{{/enableMenu}}
+		{{#enableThebe}}
+		keyboard: {
+			39: 'next',
+			37: 'prev'
+		},
+		maxScale: 1.0,
+		minScale: 1.0
+		{{/enableThebe}}
       };
 
       // options from URL query string
@@ -240,7 +255,11 @@
     </script>
 
     <script>
-      Reveal.initialize(options);
+      Reveal.initialize(options)
+	  {{#enableThebe}}
+		  .then(() => thebe_init("{{{kernel}}}", "{{{kernelHost}}}"))
+	  {{/enableThebe}}
+	  ;
     </script>
   </body>
 

@@ -13,5 +13,6 @@
 	"transition": "slide",
 	"enableCustomControls": true,
 	"timeForPresentation": 120,
+	"enableThebe": false,
 	"log": false
 }

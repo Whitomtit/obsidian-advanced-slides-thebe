@@ -149,6 +149,18 @@ function build() {
                         to: ['./plugin/chart/*'],
                     }
                 }),
+				copy({
+					assets: {
+						from: ['node_modules/thebe/lib/**/*'],
+						to: ['./plugin/thebe/*'],
+					}
+				}),
+				copy({
+					assets: {
+						from: ['src/plugin_thebe.js'],
+						to: ['./plugin/thebe/plugin.js'],
+					}
+				}),
                 copy({
                     assets: {
                         from: ['node_modules/reveal.js-elapsed-time-bar/plugin/elapsed-time-bar/elapsed-time-bar.js'],
@@ -164,6 +176,7 @@ function build() {
             ],
         }).then(buildScss('src/scss/layout/main.scss', TEST_VAULT + '/css/layout.css'))
         .then(buildScss('src/scss/theme/source/mattropolis.scss', TEST_VAULT + '/css/mattropolis.css'))
+		.then(buildScss('src/scss/thebe/main.scss', TEST_VAULT + '/plugin/thebe/style.css'))
         .then(buildAllThemes('src/scss/theme/source/'))
         .catch(() => process.exit(1));
 }

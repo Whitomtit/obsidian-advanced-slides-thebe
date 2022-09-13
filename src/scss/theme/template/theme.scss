@@ -162,13 +162,13 @@
 .reveal blockquote {
 	display: block;
 	position: relative;
-	width: 70%;
+	width: 100%;
 	margin: var(--r-block-margin) auto;
 	padding: 5px;
 
 	font-style: italic;
 	background: rgba(255, 255, 255, 0.05);
-	box-shadow: 0 0 2px rgba(0,0,0,0.2);
+	box-shadow: 2px 2px 8px rgb(0 0 0 / 20%);
 }
 	.reveal blockquote p:first-child,
 	.reveal blockquote p:last-child {
@@ -182,7 +182,7 @@
 .reveal pre {
 	display: block;
 	position: relative;
-	width: 90%;
+	width: 100%;
 	margin: var(--r-block-margin) auto;
 
 	text-align: left;
@@ -192,7 +192,7 @@
 
 	word-wrap: break-word;
 
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+	box-shadow: none;
 }
 
 .reveal code {
@@ -207,6 +207,9 @@
 	overflow: auto;
 	max-height: 400px;
 	word-wrap: normal;
+	font-size: 20px;
+	border: grey 2px solid;
+	border-radius: 4px;
 }
 
 .reveal .code-wrapper {
