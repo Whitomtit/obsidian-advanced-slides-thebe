@@ -1,4 +1,3 @@
-import { lstat } from 'fs';
 import { readFileSync } from 'fs-extra';
 import { App, FileSystemAdapter, resolveSubpath, TFile } from 'obsidian';
 import path from 'path';
@@ -49,7 +48,7 @@ export class ObsidianUtils {
 
 		const allFiles = this.app.vault.getFiles();
 		const filesNotInExportDir = allFiles.filter(item => !item.path.contains(expDir));
-		const allHits = filesNotInExportDir.filter(item => item.path.contains(filename));
+		const allHits = filesNotInExportDir.filter(item => item.name == filename);
 
 		let file: TFile = null;
 
@@ -60,11 +59,11 @@ export class ObsidianUtils {
 
 		// Workaround for Excalidraw images
 		if (!file && filename.toLowerCase().endsWith('.excalidraw')) {
-			let hit = allHits.filter(x => x.path.contains(filename + '.svg'));
+			let hit = filesNotInExportDir.filter(x => x.path.contains(filename + '.svg'));
 			if (hit) {
 				file = hit.first();
 			} else {
-				hit = allHits.filter(x => x.path.contains(filename + '.png'));
+				hit = filesNotInExportDir.filter(x => x.path.contains(filename + '.png'));
 				if (hit) {
 					file = hit.first();
 				}
@@ -111,8 +110,8 @@ export class ObsidianUtils {
 		}
 	}
 
-	parseFile(relativeFilePath: string, header: string) {
-		const tfile = this.getTFile(relativeFilePath);
+	parseFile(filename: string, header: string) {
+		const tfile = this.getTFile(filename);
 
 		if (!tfile) {
 			return null;
@@ -140,7 +139,7 @@ export class ObsidianUtils {
 				}
 
 			} else {
-				return '![[' + relativeFilePath + '#' + header + ']]';
+				return '![[' + filename + '#' + header + ']]';
 			}
 		}
 	}
@@ -164,7 +163,10 @@ export class ObsidianUtils {
 					if (endColumn > -1) {
 						endLine = line.substring(0, endColumn);
 					}
-					result += endLine.substring(0, endLine.lastIndexOf('^')) + '\n';
+					if (endLine.includes('^')) {
+						endLine = endLine.substring(0, endLine.lastIndexOf('^'));
+					}
+					result += endLine + '\n';
 				} else {
 					result += line + '\n';
 				}

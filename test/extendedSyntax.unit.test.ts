@@ -137,6 +137,11 @@ styled text <!-- element class="with-border" -->
 });
 
 test('Extended Markdown Syntax >  Slide Backgrounds', () => {
+
+	when(MockedObsidianUtils.findFile('Image.jpg')).thenCall(arg => {
+		return '/documentation/Image.jpg';
+	});
+
 	const input = `<!-- slide data-background="aquamarine" -->
 ## Slide with text based background
 ---
@@ -165,6 +170,11 @@ test('Extended Markdown Syntax >  Slide Backgrounds', () => {
 
 ---
 
+<!-- slide bg="[[Image.jpg]]" -->
+## Slide with image background #2
+
+---
+
 <!-- slide data-background-image="https://picsum.photos/seed/picsum/800/600" data-background-opacity="0.5" -->
 ## with opacity
 
@@ -182,6 +192,41 @@ See [reveal backgrounds](https://revealjs.com/backgrounds/)
 
 	return expect(sut.process(markdown, options)).toMatchSnapshot();
 });
+
+test('Extended Markdown Syntax >  Default Background', () => {
+
+	when(MockedObsidianUtils.findFile('Image.jpg')).thenCall(arg => {
+		return '/documentation/Image.jpg';
+	});
+
+	when(MockedObsidianUtils.findFile('Slide.jpg')).thenCall(arg => {
+		return '/documentation/Slide.jpg';
+	});
+
+	const input = `
+## Slide with default Background
+
+---
+
+<!-- slide bg="[[Slide.jpg]]" -->
+
+## Slide with overloaded Background
+
+---
+
+<!-- slide class="titleSlide" -->
+
+## Slide without overloaded Background
+
+`;
+
+	const { options, markdown } = prepare(input);
+	options.bg = '[[Image.jpg]]'
+	const sut = new ObsidianMarkdownPreprocessor(utilsInstance);
+
+	return expect(sut.process(markdown, options)).toMatchSnapshot();
+});
+
 
 test('Extended Markdown Syntax >  Speaker Notes', () => {
 	const input = `## My Slide
@@ -271,6 +316,92 @@ test('Extended Markdown Syntax >  Excalidraw support', () => {
 ![[Sample.excalidraw]] <!-- element style="width:300px; height:400px" -->`;
 
 	const { options, markdown } = prepare(input);
+	const sut = new ObsidianMarkdownPreprocessor(utilsInstance);
+
+	return expect(sut.process(markdown, options)).toMatchSnapshot();
+});
+
+test('Extended Markdown Syntax >  Chart support', () => {
+
+	const input = `
+	
+	\`\`\`chart
+    type: bar
+    labels: [Monday,Tuesday,Wednesday,Thursday,Friday, Saturday, Sunday, "next Week", "next Month"]
+    series:
+      - title: Title 1
+        data: [1,2,3,4,5,6,7,8,9]
+      - title: Title 2
+        data: [5,4,3,2,1,0,-1,-2,-3]
+\`\`\`
+
+	`;
+
+	const { options, markdown } = prepare(input);
+	const sut = new ObsidianMarkdownPreprocessor(utilsInstance);
+
+	return expect(sut.process(markdown, options)).toMatchSnapshot();
+});
+
+test('Extended Markdown Syntax >  Chart support > Illegal Input', () => {
+
+	const input = `
+	
+	\`\`\`chart
+    type: bar
+    labels: [Monday,Tuesday,Wednesday,Thursday,Friday, Saturday, Sunday, "next Week", "next Month"]
+    series:
+      - title: Title 1
+        data: [1,2,3,4,5,6,7,8,9]
+      - title: Title 2
+        data: [5,4,3,2,1,0,-1,-2,-3]
+\`
+
+	`;
+
+	const { options, markdown } = prepare(input);
+	const sut = new ObsidianMarkdownPreprocessor(utilsInstance);
+
+	return expect(sut.process(markdown, options)).toMatchSnapshot();
+});
+
+test('Extended Markdown Syntax >  Chart support > Extended Settings', () => {
+
+	const input = `
+	
+	\`\`\`chart
+    type: bar
+    labels: [Monday,Tuesday,Wednesday,Thursday,Friday, Saturday, Sunday, "next Week", "next Month"]
+    series:
+      - title: Title 1
+        data: [1,2,3,4,5,6,7,8,9]
+      - title: Title 2
+        data: [5,4,3,2,1,0,-1,-2,-3]
+	spanGaps: true
+	tension: 0.5
+	beginAtZero: true
+	legend: false
+	legendPosition: left
+	stacked: true
+\`\`\`
+
+	`;
+
+	const { options, markdown } = prepare(input);
+	const sut = new ObsidianMarkdownPreprocessor(utilsInstance);
+
+	return expect(sut.process(markdown, options)).toMatchSnapshot();
+});
+
+test('Advanced Slides Feature >  Show Debug Grid', () => {
+	const input = `## My Slide
+
+This slide shows the debug view feature
+
+`;
+
+	const { options, markdown } = prepare(input);
+	options.showGrid = true;
 	const sut = new ObsidianMarkdownPreprocessor(utilsInstance);
 
 	return expect(sut.process(markdown, options)).toMatchSnapshot();

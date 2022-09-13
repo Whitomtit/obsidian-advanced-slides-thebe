@@ -33,13 +33,11 @@ export class TemplateProcessor {
 				return slidegroup
 					.split(new RegExp(options.verticalSeparator, 'gmi'))
 					.map(slide => {
-
-						const newSlide = slide;
 						if (this.templateCommentRegex.test(slide)) {
 							try {
 
 								// eslint-disable-next-line prefer-const
-								let [md, notes] = this.extractNotes(newSlide);
+								let [md, notes] = this.extractNotes(slide);
 
 								let circuitCounter = 0;
 								while (this.templateCommentRegex.test(md)) {
@@ -52,8 +50,11 @@ export class TemplateProcessor {
 									}
 								}
 								md = md.replaceAll(this.emptySlideCommentRegex, '');
+								md = md.trim();
 								md = this.computeVariables(md);
-								md += notes;
+								if (notes.length > 0) {
+									md += '\n\n' + notes;
+								}
 								output = output.split(slide).join(md);
 								return md;
 							} catch (error) {
@@ -109,7 +110,11 @@ export class TemplateProcessor {
 			// eslint-disable-next-line prefer-const
 			let [match, name, content] = m;
 
-			if (name == 'block') continue;
+			if (name.includes('<!--')) {
+				name = name.substring(0, name.indexOf('<!--'));
+			}
+
+			if (name.trim() == 'block') continue;
 
 			content = '::: block\n' + content;
 			const optionalName = '<%? ' + name.trim() + ' %>';
